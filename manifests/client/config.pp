@@ -134,7 +134,7 @@ class openldap::client::config {
     'absent' => 'rm SUDOERS_BASE',
     default  => "set SUDOERS_BASE ${::openldap::client::sudoers_base}",
   }
-  $changes = delete_undef_values([
+  $_changes = [
     $base,
     $bind_policy,
     $bind_timelimit,
@@ -161,7 +161,8 @@ class openldap::client::config {
     $tls_cacertdir,
     $tls_reqcert,
     $sudoers_base,
-  ])
+  ]
+  $changes = $_changes.filter |$val| { $val =~ NotUndef }
   augeas { 'ldap.conf':
     incl    => $::openldap::client::file,
     lens    => 'Spacevars.lns',
